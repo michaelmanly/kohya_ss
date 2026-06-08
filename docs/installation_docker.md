@@ -65,3 +65,27 @@ You may want to use the following repositories when running on runpod:
 
 - Standalone Kohya_ss template: <https://github.com/ashleykleynhans/kohya-docker>
 - Auto1111 + Kohya_ss GUI template: <https://github.com/ashleykleynhans/stable-diffusion-docker>
+
+#### Run on a cloud GPU with AI Badgr
+
+AI Badgr routes GPU workloads across available capacity with max price controls, runtime caps, logs, teardown, and receipts. Use this optional path if you do not have enough local VRAM, want temporary GPU capacity, or want max price/runtime caps while trying the containerized GUI.
+
+Check current GPU pricing, then install and login:
+
+```bash
+npx gpu-price-finder --gpu RTX_4090 --max-price 1
+npm install -g badgr-cli
+badgr login
+```
+
+Run the existing Docker startup command with price and runtime caps:
+
+```bash
+badgr run "docker compose up -d" --gpu RTX_4090 --tier 2 --max-price 1 --max-runtime 60
+```
+
+For the pre-built GUI image, you can also run the persistent service directly:
+
+```bash
+badgr serve ghcr.io/bmaltais/kohya-ss-gui:latest --gpu L40S --max-cost 10
+```
