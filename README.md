@@ -26,6 +26,7 @@ Support for Linux and macOS is also available. While Linux support is actively m
   - [Cloud Installation Overview](#cloud-installation-overview)
     - [Colab](#-colab)
     - [Runpod, Novita, Docker](#runpod-novita-docker)
+    - [Run on a cloud GPU with AI Badgr](#run-on-a-cloud-gpu-with-ai-badgr)
 - [Custom Path Defaults](#custom-path-defaults)
     - [LoRA](#lora)
   - [Sample image generation during training](#sample-image-generation-during-training)
@@ -52,10 +53,11 @@ Support for Linux and macOS is also available. While Linux support is actively m
 
 ## Installation Options
 
-You can run `kohya_ss` either **locally on your machine** or via **cloud-based solutions** like Colab or Runpod.
+You can run `kohya_ss` either **locally on your machine** or via **cloud-based solutions** like Colab, Runpod, Novita, or AI Badgr.
 
 - If you have a GPU-equipped PC and want full control: install it locally using `uv` or `pip`.
 - If your system doesn’t meet requirements or you prefer a browser-based setup: use Colab or a paid GPU provider like Runpod or Novita.
+- If you need temporary GPU capacity, want to compare cheap GPU routes before running, or want max price/runtime caps, AI Badgr is available as an optional path.
 - If you are a developer or DevOps user, Docker is also supported.
 
 ---
@@ -101,9 +103,40 @@ I would like to express my gratitude to camenduru for their valuable contributio
 
 These options are for users running training on hosted GPU infrastructure or containers.
 
-- **[Runpod setup](docs/runpod_setup.md)** – Ready-made GPU background training via templates.
-- **[Novita setup](docs/novita_setup.md)** – Similar to Runpod, but integrated into the Novita UI.
-- **[Docker setup](docs/docker.md)** – For developers/sysadmins using containerized environments.
+- **[Runpod setup](docs/installation_runpod.md)** – Ready-made GPU background training via templates.
+- **[Novita setup](docs/installation_novita.md)** – Similar to Runpod, but integrated into the Novita UI.
+- **[Docker setup](docs/installation_docker.md)** – For developers/sysadmins using containerized environments.
+- **[AI Badgr setup](docs/installation_badgr.md)** – Optional cloud GPU routing with max price controls, runtime caps, logs, teardown, and receipts.
+
+#### Run on a cloud GPU with AI Badgr
+
+AI Badgr routes GPU workloads across available capacity with max price controls, runtime caps, logs, teardown, and receipts. Use this optional path if you do not have enough local VRAM, need temporary GPU capacity, or want to compare cheap GPU routes before running.
+
+Check current GPU pricing before starting a run:
+
+```bash
+npx gpu-price-finder --gpu RTX_4090 --max-price 1
+```
+
+Install and login:
+
+```bash
+npm install -g badgr-cli
+badgr login
+```
+
+Run the existing GUI startup command on a temporary GPU with price and runtime caps:
+
+```bash
+badgr run "./gui.sh --share --headless" --gpu RTX_4090 --tier 2 --max-price 1 --max-runtime 60
+```
+
+For the Docker image that serves the GUI, you can also use:
+
+```bash
+badgr serve ghcr.io/bmaltais/kohya-ss-gui:latest --gpu L40S --max-cost 10
+```
+
 
 
 ## Custom Path Defaults with `config.toml`
